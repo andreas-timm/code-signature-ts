@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // SPDX-License-Identifier: CC0-1.0
-// @sha256sum 0x26ecafc51db8d22fb4edb498d4deef16c9ed1d3ee3da19851f13b97c1d90d4e4
-// @eip191signature 0x6ff3f49222a91cb1ab60198a7e132b0fe77b5e51f5c442594143246164e1615b7e0e50a64576a1685901950dd39286c32f6ebde3b7eff42f34fa29767cb121661b
+// @sha256sum 0x14ec64f648fa74dd0a0136f4776f77e17fedb41f0cb1cfc3760ad730e09610ed
+// @eip191signature 0xf4cbc62539e25336df2049c637f4e6faca1cd31a6dec53bc377d97a3b77c54bc6437c97b9b08b213c20d252e3daa7ad66d72f1750a9b5a51a9bc497603b545331b
 
 const {readFile, writeFile} = require('fs/promises')
 const ethers = require('ethers')
@@ -122,26 +122,35 @@ const signFile = (options) => readFile(options.filePath, 'utf8').then(content =>
 
     const mnemonicResolver = process.env.MNEMONIC ? Promise.resolve(process.env.MNEMONIC) : readMnemonic()
     return mnemonicResolver
-        .then(mnemonic => signMessage(verifyData.toSign.content, mnemonic).then(data => {
-            const toSha256Sum = verifyData.toSign.value === null ? verifyData.toSign : getFilteredContent(
-                verifyData.woSha256Sum.content,
-                '@eip191signature',
-                data.signature
-            )
-            const sha256sum = ethers.utils.sha256(ethers.utils.toUtf8Bytes(toSha256Sum.content))
+        .then(mnemonic => {
+            if (!mnemonic) {
+                const wallet = ethers.Wallet.createRandom()
 
-            if (options.silent !== true) {
-                console.log('---')
-                console.log(`@sha256sum ${sha256sum}`)
-                console.log(`@eip191signature ${data.signature}`)
+                console.log('mnemonic: ', wallet.mnemonic)
+                console.log('address: ', wallet.address)
+                mnemonic = wallet.mnemonic.phrase
             }
+            return signMessage(verifyData.toSign.content, mnemonic).then(data => {
+                const toSha256Sum = verifyData.toSign.value === null ? verifyData.toSign : getFilteredContent(
+                    verifyData.woSha256Sum.content,
+                    '@eip191signature',
+                    data.signature
+                )
+                const sha256sum = ethers.utils.sha256(ethers.utils.toUtf8Bytes(toSha256Sum.content))
 
-            if (options.force === true) {
-                return forceUpdateOrigFile(content, data.signature, sha256sum, verifyData, options)
-            }
+                if (options.silent !== true) {
+                    console.log('---')
+                    console.log(`@sha256sum ${sha256sum}`)
+                    console.log(`@eip191signature ${data.signature}`)
+                }
 
-            return {signature: data.signature, sha256sum, verifyData}
-        }))
+                if (options.force === true) {
+                    return forceUpdateOrigFile(content, data.signature, sha256sum, verifyData, options)
+                }
+
+                return {signature: data.signature, sha256sum, verifyData}
+            })
+        })
 })
 
 if (require.main === module) {
