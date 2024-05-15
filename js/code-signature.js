@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // SPDX-License-Identifier: CC0-1.0
-// @sha256sum 0x14ec64f648fa74dd0a0136f4776f77e17fedb41f0cb1cfc3760ad730e09610ed
-// @eip191signature 0xf4cbc62539e25336df2049c637f4e6faca1cd31a6dec53bc377d97a3b77c54bc6437c97b9b08b213c20d252e3daa7ad66d72f1750a9b5a51a9bc497603b545331b
+// @sha256sum 0x6487a05aa4595197cbb005c73b6bcf5e565a97c2368168a6a43aa7cea42131a4
+// @eip191signature 0xf27d28722870715db24ee48b0112440f8c66ee708616e2338934f67af21ec11b22f9bb0f96a162ce17a14ec41a2ab3ead073a443793b74a0dc1f19fc93ec48931b
 
 const {readFile, writeFile} = require('fs/promises')
 const ethers = require('ethers')
@@ -63,7 +63,7 @@ const verifyCurrent = (content, options) => {
         const contentSha256sum = ethers.utils.sha256(ethers.utils.toUtf8Bytes(result.woSha256Sum.content))
         result.sha256SumPassed = result.woSha256Sum.value === contentSha256sum
         if (options.silent !== true) {
-            console.log('sha256sum check: ', result.sha256SumPassed ? 'OK' : 'FAIL')
+            console.log('sha256sum check:', result.sha256SumPassed ? 'OK' : 'FAIL')
         }
     }
 
@@ -80,16 +80,25 @@ const verifyCurrent = (content, options) => {
     return result
 }
 
-const forceUpdateOrigFile = (content, signature, sha256sum, verifyData, options) => {
+const forceUpdateOrigFile = async (content, mnemonic, signature, sha256sum, result, options) => {
     let isChanged = false
+    let changedContent
 
-    if (verifyData.woSha256Sum.value !== sha256sum) {
-        content = getFilteredContent(content, '@sha256sum', sha256sum).content
+    if (result.woSha256Sum.value !== sha256sum) {
+        changedContent = getFilteredContent(content, '@sha256sum', sha256sum).content
+        if (changedContent === content) {
+            const data = await signMessage(content, mnemonic)
+            content = [`// @sha256sum ${sha256sum}`, content].join('\n')
+            signature = data.signature
+        } else {
+            content = changedContent
+        }
         isChanged = true
     }
 
-    if (verifyData.toSign.value !== signature) {
-        content = getFilteredContent(content, '@eip191signature', signature).content
+    if (result.toSign.value !== signature) {
+        changedContent = getFilteredContent(content, '@eip191signature', signature).content
+        content = changedContent === content ? [`// @eip191signature ${signature}`, content].join('\n') : changedContent
         isChanged = true
     }
 
@@ -99,7 +108,7 @@ const forceUpdateOrigFile = (content, signature, sha256sum, verifyData, options)
                 console.log('---')
                 console.log(`File "${options.filePath}" is written.`)
             }
-            return {signature, sha256sum, verifyData}
+            return {signature, sha256sum, result}
         })
     } else {
         if (options.silent !== true) {
@@ -108,16 +117,21 @@ const forceUpdateOrigFile = (content, signature, sha256sum, verifyData, options)
         }
     }
 
-    return {signature, sha256sum, verifyData}
+    return {signature, sha256sum, result}
 }
 
 const signFile = (options) => readFile(options.filePath, 'utf8').then(content => {
-    const verifyData = verifyCurrent(content, options)
-    if (options.onlyCheck === true) {
-        if (options.silent !== true && verifyData.woSha256Sum.value === null && verifyData.toSign.value === null) {
-            console.log('Signature not found.')
+    const result = verifyCurrent(content, options)
+
+    if (result.sha256SumPassed === true) {
+        return Promise.resolve({result})
+    } else {
+        if (options.onlyCheck === true) {
+            if (options.silent !== true && result.woSha256Sum.value === null && result.toSign.value === null) {
+                console.log('Signature not found.')
+            }
+            return Promise.resolve({result})
         }
-        return Promise.resolve()
     }
 
     const mnemonicResolver = process.env.MNEMONIC ? Promise.resolve(process.env.MNEMONIC) : readMnemonic()
@@ -130,9 +144,9 @@ const signFile = (options) => readFile(options.filePath, 'utf8').then(content =>
                 console.log('address: ', wallet.address)
                 mnemonic = wallet.mnemonic.phrase
             }
-            return signMessage(verifyData.toSign.content, mnemonic).then(data => {
-                const toSha256Sum = verifyData.toSign.value === null ? verifyData.toSign : getFilteredContent(
-                    verifyData.woSha256Sum.content,
+            return signMessage(result.toSign.content, mnemonic).then(data => {
+                const toSha256Sum = result.toSign.value === null ? result.toSign : getFilteredContent(
+                    result.woSha256Sum.content,
                     '@eip191signature',
                     data.signature
                 )
@@ -145,17 +159,29 @@ const signFile = (options) => readFile(options.filePath, 'utf8').then(content =>
                 }
 
                 if (options.force === true) {
-                    return forceUpdateOrigFile(content, data.signature, sha256sum, verifyData, options)
+                    return forceUpdateOrigFile(content, mnemonic, data.signature, sha256sum, result, options)
                 }
 
-                return {signature: data.signature, sha256sum, verifyData}
+                return {signature: data.signature, sha256sum, result}
             })
         })
 })
 
+const printHelp = () => {
+    console.log('Usage: code-signature [OPTIONS] <FILE>')
+    console.log('OPTIONS:')
+    console.log('  -v  only verify')
+    console.log('  -f  force set')
+    console.log('  -s  silent')
+}
+
 if (require.main === module) {
     const options = process.argv.slice(2).reduce((acc, item) => {
-        if (item === '-v') {acc.onlyCheck = true}
+        if (item === '-h') {
+            printHelp()
+            process.exit(0)
+        }
+        else if (item === '-v') {acc.onlyCheck = true}
         else if (item === '-f') {acc.force = true}
         else if (item === '-s') {acc.silent = true}
         else {acc.filePath = item}
@@ -163,7 +189,7 @@ if (require.main === module) {
     }, {})
 
     if (options.filePath === undefined) {
-        console.log('Usage: code-signature [-v — only verify] [-f — force set] [-s — silent] <FILE>')
+        printHelp()
     } else {
         signFile(options).catch(console.error)
     }
