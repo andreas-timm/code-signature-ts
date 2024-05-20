@@ -1,0 +1,19 @@
+{
+  "name": "code-signature-ts",
+  "version": "0.2.0",
+  "module": "src/code-signature.ts",
+  "devDependencies": {
+    "@types/bun": "^1.1.2",
+    "@types/tmp": "^0.2.6",
+    "eslint": "^9.3.0",
+    "prettier": "^3.2.5",
+    "tmp": "^0.2.3"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "type": "module",
+  "dependencies": {
+    "viem": "^2.10.9"
+  }
+}

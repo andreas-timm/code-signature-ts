@@ -1,9 +1,0 @@
-{
-  "name": "code-signature",
-  "version": "0.1.0",
-  "main": "code-signature.js",
-  "license": "CC0-1.0",
-  "dependencies": {
-    "ethers": "^5.5.3"
-  }
-}
