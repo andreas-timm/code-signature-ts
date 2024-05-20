@@ -9,8 +9,19 @@ By adding an additional SHA-256 hash, any changes (even slight) to the file afte
 
 This version maintains the clarity and objectives of your original text while slightly improving the flow and readability.
 
-## Syntax
+## Practical Implementation
 
+### Add signature
+- **Step 1**: Calculate the EIP-191 signature from the original text.
+- **Step 2**: Add the EIP-191 signature as a comment line.
+- **Step 3**: Calculate the SHA-256 hash of the entire text, including the EIP-191 signature comment.
+- **Step 4**: Add the SHA-256 hash as an additional comment line.
+
+### Verification process
+- **Step 1**: Calculate the SHA-256 hash of the current file (including the signature comment, but without the SHA-256 comment) and compare it to the provided SHA-256 hash.
+- **Step 2**: Restore EVM account address from EIP-191 signature against the original text hash without the signature comment.
+
+### Example
 ```ts
 // @sha256sum 0xdaea6ea29e60619ef1050287fb380a9edc234c8d18e01103a5fb8027694f91f4
 // @eip191signature 0x96958f5875095d4b2967e37dda0b4a696611e2c2fb543ae30be41056f94b97f31d40970caf2ceeec179b2cfe23a7e37a1ef44a817113dc3a368f9296adab93531c
