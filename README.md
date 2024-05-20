@@ -1,5 +1,7 @@
 # EIP-191 Code Signature (Typescript)
 
+[![test](https://github.com/andreas-timm/code-signature-ts/actions/workflows/test.yml/badge.svg)](https://github.com/andreas-timm/code-signature-ts/actions/workflows/test.yml)  
+
 ## Motivation
 Ensuring the integrity and authenticity of text files, especially source code, makes sense. This module offers a tool to sign text files with an EVM account using EIP-191[^1] signatures, providing an alternative to GPG that is not tied to an email address.
 
