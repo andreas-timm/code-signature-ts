@@ -33,14 +33,28 @@ This tool has been developed and tested exclusively on **macOS**. It is not guar
 ## Limitations
 Only comments of the double slash "`//`" type can be used at this time.
 
+## Install
+```shell
+git clone --depth=1 https://github.com/andreas-timm/code-signature-ts.git ~/.local/share/code-signature-ts
+```
+```shell
+cd ~/.local/share/code-signature-ts
+```
+```shell
+bun install -p
+```
+```shell
+ln -s ~/.local/share/code-signature-ts/src/code-signature.ts ~/.local/bin/code-signature
+```
+
 ## Usage
 ### Check
 ```shell
-code-signature --verify code-file.ts
-OK: 0x0000000000000000000000000000000000000000
+code-signature -v src/code-signature.ts
+OK: 0x630C6C3180d3b4B6912644D046f6769dA3e54843
 ```
 
-### Integration with pass/gpt
+### Integration with pass/gpg
 ```shell
 MNEMONIC=$(pass show mnemonic) code-signature --write code-file.ts
 ```
