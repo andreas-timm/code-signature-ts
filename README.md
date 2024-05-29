@@ -59,6 +59,10 @@ OK: 0x630C6C3180d3b4B6912644D046f6769dA3e54843
 MNEMONIC=$(pass show mnemonic) code-signature --write code-file.ts
 ```
 
+## Roadmap
+
+- [ ] Add a demonstration static (SSG) frontend.
+
 ## License
 [![CC BY 4.0][cc-by-shield]][cc-by]
 
