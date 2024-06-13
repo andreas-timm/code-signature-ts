@@ -1,11 +1,16 @@
 import type { Address } from 'viem'
 
-export type Options = {
+export type CliOptions = {
+    help?: boolean,
+    write?: boolean,
+    verify?: boolean,
+    silent?: boolean,
+    prefix: string,
+    out?: string,
+}
+
+export type Options = CliOptions & {
     filePath: string
-    verify?: boolean
-    write?: boolean
-    silent?: boolean
-    out?: string
     mnemonic?: string
 }
 

@@ -30,9 +30,6 @@ This version maintains the clarity and objectives of your original text while sl
 ## Compatibility
 This tool has been developed and tested exclusively on **macOS**. It is not guaranteed to work on other operating systems.
 
-## Limitations
-Only comments of the double slash "`//`" type can be used at this time.
-
 ## Install
 ```shell
 git clone --depth=1 https://github.com/andreas-timm/code-signature-ts.git ~/.local/share/code-signature-ts
@@ -48,6 +45,20 @@ ln -s ~/.local/share/code-signature-ts/src/code-signature.ts ~/.local/bin/code-s
 ```
 
 ## Usage
+### Help
+```shell
+$ code-signature -h
+Usage: code-signature-ts [OPTIONS] <FILE|->
+OPTIONS:
+  --verify, -v — only verify
+  --write, -f — write file
+  --silent, -s — silent
+  --prefix, -p — commented line prefix
+  --out, -o — output file
+ENVIRONMENT:
+  MNEMONIC — mnemonic
+```
+
 ### Check
 ```shell
 code-signature -v src/code-signature.ts
@@ -60,7 +71,6 @@ MNEMONIC=$(pass show mnemonic) code-signature --write code-file.ts
 ```
 
 ## Roadmap
-
 - [ ] Add a demonstration static (SSG) frontend.
 
 ## License
