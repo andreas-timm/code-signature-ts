@@ -1,6 +1,9 @@
 {
   "name": "code-signature-ts",
   "module": "src/code-signature.ts",
+  "scripts": {
+    "build": "bun build src/code-signature-min.ts --outfile build/code-signature-min.js -e 'viem*' --minify-whitespace"
+  },
   "devDependencies": {
     "@types/bun": "^1.1.2",
     "@types/tmp": "^0.2.6",

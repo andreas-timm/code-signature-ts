@@ -23,8 +23,8 @@ This version maintains the clarity and objectives of your original text while sl
 
 ### Example
 ```ts
-// @sha256sum 0xdaea6ea29e60619ef1050287fb380a9edc234c8d18e01103a5fb8027694f91f4
-// @eip191signature 0x96958f5875095d4b2967e37dda0b4a696611e2c2fb543ae30be41056f94b97f31d40970caf2ceeec179b2cfe23a7e37a1ef44a817113dc3a368f9296adab93531c
+// @sha256sum 0xe901425d12469ef7e0fdd010e2d158d5398a8a6ae7e1a79bce1f77a6b9d3237b
+// @eip191signature 0x3b08f924e994205005312fec95c30e181fb066744ca51a17d122221953cda7e37abec4184e1755385cae7837cea1a6e6f74b3d336484026338bf6d2426e9f9be1c
 ```
 
 ## Compatibility
@@ -51,7 +51,7 @@ $ code-signature -h
 Usage: code-signature-ts [OPTIONS] <FILE|->
 OPTIONS:
   --verify, -v — only verify
-  --write, -f — write file
+  --write, -w — write file
   --silent, -s — silent
   --prefix, -p — commented line prefix
   --out, -o — output file
@@ -69,6 +69,10 @@ OK: 0x630C6C3180d3b4B6912644D046f6769dA3e54843
 ```shell
 MNEMONIC=$(pass show mnemonic) code-signature --write code-file.ts
 ```
+
+## Min version
+- [code-signature-min.ts](src/code-signature-min.ts)  
+  minified: [build/code-signature-min.js](build/code-signature-min.js)
 
 ## Roadmap
 - [ ] Add a demonstration static (SSG) frontend.
