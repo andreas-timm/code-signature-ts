@@ -1,12 +1,13 @@
 import type { Address } from 'viem'
 
 export type CliOptions = {
-    help?: boolean,
-    write?: boolean,
-    verify?: boolean,
-    silent?: boolean,
-    prefix: string,
-    out?: string,
+    help: boolean
+    write: boolean
+    force: boolean
+    verify: boolean
+    silent: boolean
+    prefix: string
+    out?: string
 }
 
 export type Options = CliOptions & {

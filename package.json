@@ -1,6 +1,5 @@
 {
   "name": "code-signature-ts",
-  "version": "0.3.0",
   "module": "src/code-signature.ts",
   "devDependencies": {
     "@types/bun": "^1.1.2",
