@@ -1,6 +1,12 @@
 #!/usr/bin/env -S bun run
-// @eip191signature 0xd3f262a8a7a0a8ad1f7455472b1124703814d39f7ae0cbb8e7559b55001545d1794eb040c80d70f8cea182afe60e0ac344277d4f002ac0a076f1f0c949b89a661b
-// @sha256sum 0x53a500071858618c65b00f33e1c2f79a2463f2e6d1122b868d932d6971c957bd
+// SPDX-License-Identifier: CC-BY-4.0
+// This work is licensed under the Creative Commons Attribution 4.0 International (CC BY 4.0) License.
+// To view a copy of this license, visit https://creativecommons.org/licenses/by/4.0/
+// Author: Andreas Timm
+// Repository: https://github.com/andreas-timm/code-signature-ts
+// Version: 0.1.0
+// @eip191signature 0x9f49a5cc7c79489ec1b37890a2a44be7a27fdffe87856422475ba0b375e1d9b33b98f5b653acf745fa06be45bce5d66da5af3d1c5e06adf0401e977c01cb31171c
+// @sha256sum 0xfec11653f8312e10be3ebb2f45251a46c83fd74d811267721c024e2f3ce86842
 
 import { sha256 } from 'viem'
 import { english, generateMnemonic, mnemonicToAccount } from 'viem/accounts'
