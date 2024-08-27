@@ -141,7 +141,11 @@ export async function codeSignature(options: Options) {
     let content: string
 
     if (options.filePath == '-') {
-        content = ''
+        let lines: string[] = []
+        for await (const line of console) {
+            lines.push(line)
+        }
+        content = lines.join('\n')
     } else {
         content = await Bun.file(options.filePath).text()
     }
