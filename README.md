@@ -89,7 +89,7 @@ This work is licensed under a [Creative Commons Attribution 4.0 International Li
 [cc-by-shield]: https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg
 
 - [LICENSE](https://github.com/andreas-timm/code-signature-ts/blob/main/LICENSE)
-- Author: Andreas Timm
+- Author: [Andreas Timm](https://github.com/andreas-timm)
 
 ## Links
 [^1]: https://eips.ethereum.org/EIPS/eip-191

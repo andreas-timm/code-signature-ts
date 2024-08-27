@@ -5,8 +5,8 @@
 // Author: Andreas Timm
 // Repository: https://github.com/andreas-timm/code-signature-ts
 // Version: 0.4.0
-// @sha256sum 0xe901425d12469ef7e0fdd010e2d158d5398a8a6ae7e1a79bce1f77a6b9d3237b
-// @eip191signature 0x3b08f924e994205005312fec95c30e181fb066744ca51a17d122221953cda7e37abec4184e1755385cae7837cea1a6e6f74b3d336484026338bf6d2426e9f9be1c
+// @sha256sum 0x004449b7297c9c7332cb590a46ddddd5640fb79912b57f027f77df816b883c5c
+// @eip191signature 0x8f23ab609c8c2f00f9ebbd9e0e78d3cb62a273e74ccbe1aa21a0207aa26a76ad2d97333c219e7da1ba3382ed19585bb24d666bceae3e850124f454dd1d1cd2251c
 
 import { parseArgs } from 'util'
 import { hashMessage, recoverAddress, sha256 } from 'viem'
@@ -116,6 +116,7 @@ function printHelp() {
     console.log('OPTIONS:')
     console.log('  --verify, -v — only verify')
     console.log('  --write, -w — write file')
+    console.log('  --force, -f - force write')
     console.log('  --silent, -s — silent')
     console.log('  --prefix, -p — commented line prefix')
     console.log('  --out, -o — output file')
@@ -165,7 +166,7 @@ export async function codeSignature(options: Options) {
         signResult = await sign(verifyResult, options)
 
         if (signResult.signedContent !== null) {
-            if (options.write && fail) {
+            if (options.write && (fail || options.force)) {
                 await write(options, signResult.signedContent)
             }
 
@@ -192,6 +193,7 @@ export async function codeSign() {
         options: {
             help: { type: 'boolean', short: 'h', default: false },
             write: { type: 'boolean', short: 'w', default: false },
+            force: { type: 'boolean', short: 'f', default: false },
             verify: { type: 'boolean', short: 'v', default: false },
             silent: { type: 'boolean', short: 's', default: false },
             prefix: { type: 'string', short: 'p', default: '//' },
