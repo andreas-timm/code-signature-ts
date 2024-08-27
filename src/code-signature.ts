@@ -182,7 +182,7 @@ export async function codeSignature(options: Options) {
     return { verifyResult, signResult, fail }
 }
 
-if (import.meta.main) {
+export async function codeSign() {
     const { values, positionals } = parseArgs({
         args: Bun.argv,
         options: {
@@ -215,4 +215,8 @@ if (import.meta.main) {
     if (res.fail) {
         process.exit(1)
     }
+}
+
+if (import.meta.main) {
+    await codeSign()
 }
